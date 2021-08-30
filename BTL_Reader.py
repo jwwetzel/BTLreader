@@ -1,6 +1,4 @@
 import csv
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import os
@@ -50,8 +48,8 @@ with open(args.fileName) as dataFile:
                     channel += 1
                         
 #print("Delay",delay)
-print("sipmPowerLevels",sipmPowerLevels)
-print("asicPowerLevels",asicPowerLevels)
+#print("sipmPowerLevels",sipmPowerLevels)
+#print("asicPowerLevels",asicPowerLevels)
 #print(tempLevels)
 
 
