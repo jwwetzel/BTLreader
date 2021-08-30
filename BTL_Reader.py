@@ -9,8 +9,8 @@ plt.rc('font',size=14)
 
 parser = argparse.ArgumentParser(description='add filename, event scan')
 parser.add_argument('fileName', type=str, help='Required Filename')
-parser.add_argument('--start', help='beginning time slice')
-parser.add_argument('--end', help='ending time slice.  If not given will show all from start on')
+parser.add_argument('--start', type=int, help='beginning time slice')
+parser.add_argument('--end', type=int, help='ending time slice.  If not given will show all from start on')
 parser.add_argument('--channel', help='plot single channel')
 
 args = parser.parse_args()
@@ -34,8 +34,8 @@ with open(args.fileName) as dataFile:
         if line.startswith('Delay'):
             delay = line.split(":")[1].strip()
         elif line.startswith('SIPM'):
-            sipmPowerLevels.append(line.split(",")[2].split(" ")[1])
-            asicPowerLevels.append(line.split(",")[4].split(" ")[1])
+            sipmPowerLevels.append(float(line.split(",")[2].split(" ")[1]))
+            asicPowerLevels.append(float(line.split(",")[4].split(" ")[1]))
         else:
             tempLine = line.split(",")[::3]
             channel = 0
@@ -50,8 +50,8 @@ with open(args.fileName) as dataFile:
                     channel += 1
                         
 #print("Delay",delay)
-#print("sipmPowerLevels",sipmPowerLevels)
-#print("asicPowerLevels",asicPowerLevels)
+print("sipmPowerLevels",sipmPowerLevels)
+print("asicPowerLevels",asicPowerLevels)
 #print(tempLevels)
 
 
@@ -59,32 +59,69 @@ allChanFig  = plt.figure(constrained_layout=True)
 allChanFig.set_figheight(7)
 allChanFig.set_figwidth(8)
 
-allChanGS   = allChanFig.add_gridspec(4,1)
+allChanGS   = allChanFig.add_gridspec(2,1)
+allChanGS2  = allChanGS[1].subgridspec(2,1)
 
-allChanAx1  = allChanFig.add_subplot(allChanGS[0:3,:])
+allChanAx1  = allChanFig.add_subplot(allChanGS[0])
 allChanAx1.set_title('Channels 0-20 Temperature vs time')
 
-allChanAx2  = allChanFig.add_subplot(allChanGS[3:,:])
+currChanGS  = allChanFig.add_gridspec(nrows=2, ncols=1)
+allChanAx2  = allChanFig.add_subplot(allChanGS2[0])
 
-for chan in range(len(tempLevels)):
+allChanAx3  = allChanFig.add_subplot(allChanGS2[1])
+
+if args.end is None:
+    args.end = len(tempLevels["Channel 0"])
+    
+if args.start is None:
+    args.start = 0
+
+if args.channel is not None:
+    chan = args.channel
     x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
     y = tempLevels["Channel "+str(chan)]
-    allChanAx1.plot(x, y, '.', linestyle='dashdot', label="Channel "+str(chan))
-    allChanAx1.set_title("BTL Temperature vs Time")
+    allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], '.', linestyle='dashdot', label="Channel "+str(chan))
+    allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
     allChanAx1.set_ylabel("Temperature ˚C")
+else:
+    for chan in range(len(tempLevels)):
+        x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
+        y = tempLevels["Channel "+str(chan)]
+        allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], '.', linestyle='dashdot', label="Channel "+str(chan))
+        allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
+        allChanAx1.set_ylabel("Temperature ˚C")
 
-allChanAx2.set_xlabel("Time (Seconds)")
 allChanAx2.set_ylabel("Current (nA)")
 x = [int(delay)*int(item) for item in range(len(currentLevels["Channel 20"]))]
 y = currentLevels["Channel 20"]
-allChanAx2.plot(x,y,'.', linestyle='dashdot', label = "ADC 0")
+allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 0")
 y = currentLevels["Channel 21"]
-allChanAx2.plot(x,y,'.', linestyle='dashdot', label = "ADC 1")
+allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 1")
+
+allChanAx3.set_xlabel("Time (Seconds)")
+allChanAx3.set_ylabel("Power (W)")
+y = sipmPowerLevels
+allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "SiPM W")
+y = asicPowerLevels
+allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ASIC W")
 
 allChanFig.legend(bbox_to_anchor=(1.0, 0.95), loc='upper left')
-allChanFig.savefig(outputName+"/"+outputName+"_All_Channels.png", bbox_inches="tight")
 
+if args.channel is not None:
+    allChanFig.savefig(outputName+"/"+outputName+"_Channel_"+str(args.channel)+".png", bbox_inches="tight")
+else:
+    allChanFig.savefig(outputName+"/"+outputName+"_AllChannels.png", bbox_inches="tight")
 
+#    allChanAx2.set_xlabel("Time (Seconds)")
+#    allChanAx2.set_ylabel("Current (nA)")
+#    x = [int(delay)*int(item) for item in range(len(currentLevels["Channel 20"]))]
+#    y = currentLevels["Channel 20"]
+#    allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 0")
+#    y = currentLevels["Channel 21"]
+#    allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 1")
+#
+#allChanFig.legend(bbox_to_anchor=(1.0, 0.95), loc='upper left')
+#allChanFig.savefig(outputName+"/"+outputName+"Channel_"+chan+".png", bbox_inches="tight")
 
 #allChanFig, allChanAxes = plt.subplots(2,sharex=True)
 
