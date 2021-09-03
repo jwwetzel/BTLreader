@@ -43,7 +43,7 @@ with open(args.fileName) as dataFile:
                     tempLevels["Channel "+str(channel)].append(temp)
                     channel += 1
                 else:
-                    temp = float(ch.split("E")[0])*10**int(ch.split("E")[1][0:3])*1000000000
+                    temp = float(ch.split("E")[0])*10**int(ch.split("E")[1][0:3])*1000*30.3
                     currentLevels["Channel "+str(channel)].append(temp)
                     channel += 1
                         
@@ -89,7 +89,7 @@ else:
         allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
         allChanAx1.set_ylabel("Temperature ˚C")
 
-allChanAx2.set_ylabel("Current (nA)")
+allChanAx2.set_ylabel("Pressure (PSI)")
 x = [int(delay)*int(item) for item in range(len(currentLevels["Channel 20"]))]
 y = currentLevels["Channel 20"]
 allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 0")
