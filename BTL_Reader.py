@@ -22,6 +22,12 @@ currentLevels   = defaultdict(list)
 
 outputName = "Analyzed"
 
+markers     = ['.',',','o','v','^','<','>','1','2','3','4','8','s','P','p','*','h','H','+','x','X','D','d','|','_']
+redColor    = [1,   1,      1,      0.8,    0.9,    0,  0,      0,0,    0.5,    1.0,    0.3,    0.5,    1.0,    1.0,    1.0,    0.9,0.1,0.8,0.4,0,0,0,0,0]
+greenColor  = [0,   0.5,    0.9,    1,      1,      1,  0.7,    0.5,    0.5,    0.5,    0.5,    0,0,    0,      0,      0.5,    0.3,0.6,0.2,1.0,0,0,0,0]
+blueColor   = [0,   0,      0,      0,      0,      1,  1,      0.9,    0.7,    0.9,    0.9,    0.5,    0.5,    1.0,    1.0,    0.7,0.9,0.2,0.2,0,0,0,0,0]
+
+
 if args.fileName.endswith(".txt"):
     outputName = args.fileName[:-4]+"Analyzed"
     if not os.path.isdir(outputName):
@@ -78,16 +84,17 @@ if args.channel is not None:
     chan = args.channel
     x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
     y = tempLevels["Channel "+str(chan)]
-    allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], '.', linestyle='dashdot', label="Channel "+str(chan))
+    allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=markers[int(chan)], linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
     allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
     allChanAx1.set_ylabel("Temperature ˚C")
 else:
     for chan in range(len(tempLevels)):
         x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
         y = tempLevels["Channel "+str(chan)]
-        allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], '.', linestyle='dashdot', label="Channel "+str(chan))
+        allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=markers[int(chan)], linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
         allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
         allChanAx1.set_ylabel("Temperature ˚C")
+#        print(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)])
 
 allChanAx2.set_ylabel("Pressure (PSI)")
 x = [int(delay)*int(item) for item in range(len(currentLevels["Channel 20"]))]
@@ -145,6 +152,8 @@ else:
 #plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 #plt.tight_layout()
 #plt.show()
+
+
 
 
 
