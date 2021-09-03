@@ -99,16 +99,16 @@ else:
 allChanAx2.set_ylabel("Pressure (PSI)")
 x = [int(delay)*int(item) for item in range(len(currentLevels["Channel 20"]))]
 y = currentLevels["Channel 20"]
-allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 0")
+allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],marker=',', label = "ADC 0")
 y = currentLevels["Channel 21"]
-allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ADC 1")
+allChanAx2.plot(x[args.start:args.end], y[args.start:args.end],marker=',', label = "ADC 1")
 
 allChanAx3.set_xlabel("Time (Seconds)")
 allChanAx3.set_ylabel("Power (W)")
 y = sipmPowerLevels
-allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "SiPM W")
+allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],marker=',', label = "SiPM W")
 y = asicPowerLevels
-allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],'.', linestyle='dashdot', label = "ASIC W")
+allChanAx3.plot(x[args.start:args.end], y[args.start:args.end],marker=',', label = "ASIC W")
 
 allChanFig.legend(bbox_to_anchor=(1.0, 0.95), loc='upper left')
 
