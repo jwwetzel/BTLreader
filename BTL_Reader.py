@@ -84,14 +84,14 @@ if args.channel is not None:
     chan = args.channel
     x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
     y = tempLevels["Channel "+str(chan)]
-    allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=markers[int(chan)], linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
+    allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=',', linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
     allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
     allChanAx1.set_ylabel("Temperature ˚C")
 else:
     for chan in range(len(tempLevels)):
         x = [int(delay)*int(item) for item in range(len(tempLevels["Channel "+str(chan)]))]
         y = tempLevels["Channel "+str(chan)]
-        allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=markers[int(chan)], linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
+        allChanAx1.plot(x[args.start:args.end], y[args.start:args.end], marker=',', linestyle='dashdot', label="Channel "+str(chan),color=(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)]))
         allChanAx1.set_title("BTL Temperature vs Time ("+delay+" Second Interval)")
         allChanAx1.set_ylabel("Temperature ˚C")
 #        print(redColor[int(chan)],greenColor[int(chan)],blueColor[int(chan)])
